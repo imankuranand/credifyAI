@@ -3,11 +3,15 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from pathlib import Path
 import sys
 import os
 import logging
+import traceback
 
 # Ensure the root directory is in the sys path for absolute imports
+HERE = Path(__file__).resolve().parent
+sys.path.append(str(HERE))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.inference import predict_risk
@@ -27,6 +31,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# ---------------------------------------------------------------------------
+# Static file lookup (works locally and on Vercel, wherever the files live)
+# ---------------------------------------------------------------------------
+SEARCH_ROOTS = [HERE, HERE.parent, HERE.parent.parent, Path.cwd()]
+SEARCH_SUBDIRS = ["static", "public", ""]
+
+
+def find_static(name: str) -> Path:
+    for root in SEARCH_ROOTS:
+        for sub in SEARCH_SUBDIRS:
+            candidate = root / sub / name
+            if candidate.is_file():
+                return candidate
+    raise HTTPException(status_code=404, detail=f"{name} not found")
+
+
 class PredictionRequest(BaseModel):
     dti: float
     credit_utilization: float
@@ -35,7 +56,6 @@ class PredictionRequest(BaseModel):
     active_loan_count: int
     delinquency_count: int
 
-import traceback
 
 @app.post("/predict")
 async def predict(request: PredictionRequest):
@@ -50,9 +70,25 @@ async def predict(request: PredictionRequest):
         logger.error(f"Prediction failed: {err}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# Mount static files correctly
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Keep the /static mount working, but only if the folder exists
+for _root in SEARCH_ROOTS:
+    _static_dir = _root / "static"
+    if _static_dir.is_dir():
+        app.mount("/static", StaticFiles(directory=str(_static_dir)), name="static")
+        break
+
+
+@app.get("/styles.css")
+async def serve_css():
+    return FileResponse(find_static("styles.css"), media_type="text/css")
+
+
+@app.get("/script.js")
+async def serve_js():
+    return FileResponse(find_static("script.js"), media_type="application/javascript")
+
 
 @app.get("/")
 async def serve_frontend():
-    return FileResponse("static/index.html")
+    return FileResponse(find_static("index.html"), media_type="text/html")
