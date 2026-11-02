@@ -16,3 +16,7 @@ seaborn
 # API and Web Server
 fastapi
 uvicorn
+
+#public
+script.js
+styles.css
