@@ -36,7 +36,7 @@ app.add_middleware(
 # Static file lookup (works locally and on Vercel, wherever the files live)
 # ---------------------------------------------------------------------------
 SEARCH_ROOTS = [HERE, HERE.parent, HERE.parent.parent, Path.cwd()]
-SEARCH_SUBDIRS = ["static", "public", ""]
+SEARCH_SUBDIRS = ["static", "static/public", "public", ""]
 
 
 def find_static(name: str) -> Path:
