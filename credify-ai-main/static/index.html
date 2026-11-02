@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CredifyAI – Ultimate Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+    <!-- LAYER 1: Deep Background Background & Noise -->
+    <div class="noise-overlay"></div>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <div class="master-container">
+        
+        <!-- SECTION 1: HERO INPUT PANEL -->
+        <section class="hero-section glass-panel slide-up">
+            <div class="hero-left">
+                <header class="logo-header">
+                    <i class="fa-solid fa-bolt brand-icon"></i>
+                    <h1>Credify<span class="gradient-text">AI</span></h1>
+                </header>
+                <p class="hero-subtitle">Enter applicant parameters to generate a comprehensive, real-time AI risk diagnostic and actionable financial trajectory.</p>
+                
+                <div class="trust-badges-vertical">
+                    <span class="badge-pro"><i class="fa-solid fa-microchip"></i> Explainable AI Powered</span>
+                    <span class="badge-pro"><i class="fa-solid fa-brain"></i> Model-Driven Insights</span>
+                    <span class="badge-pro"><i class="fa-solid fa-shield-halved"></i> Bank-Grade Logic</span>
+                </div>
+            </div>
+
+            <div class="hero-right">
+                <form id="prediction-form" class="form-grid-hero">
+                    
+                    <div class="form-group-card">
+                        <div class="fg-header"><i class="fa-solid fa-wallet"></i> Debt-to-Income</div>
+                        <div class="fg-value" id="val-dti">20.0%</div>
+                        <input type="range" id="dti" name="dti" min="0" max="100" step="0.5" value="20.0" class="hero-slider">
+                    </div>
+
+                    <div class="form-group-card">
+                        <div class="fg-header"><i class="fa-solid fa-calculator"></i> EMI Ratio</div>
+                        <div class="fg-value" id="val-emi">0.30</div>
+                        <input type="range" id="emi_to_income" name="emi_to_income" min="0" max="1" step="0.01" value="0.30" class="hero-slider">
+                    </div>
+
+                    <div class="form-group-card">
+                        <div class="fg-header"><i class="fa-solid fa-chart-pie"></i> Utilization</div>
+                        <div class="fg-value" id="val-credit">30.0%</div>
+                        <input type="range" id="credit_utilization" name="credit_utilization" min="0" max="100" step="0.5" value="30.0" class="hero-slider">
+                    </div>
+
+                    <div class="form-group-card">
+                        <div class="fg-header"><i class="fa-solid fa-clock-rotate-left"></i> Delinquency</div>
+                        <div class="fg-value-input">
+                            <input type="number" id="delinquency_count" name="delinquency_count" min="0" step="1" value="0" class="hero-num">
+                        </div>
+                    </div>
+
+                    <div class="form-group-card">
+                        <div class="fg-header"><i class="fa-solid fa-link"></i> Active Loans</div>
+                        <div class="fg-value-input">
+                            <input type="number" id="active_loan_count" name="active_loan_count" min="0" step="1" value="1" class="hero-num">
+                        </div>
+                    </div>
+
+                    <div class="form-group-card">
+                        <div class="fg-header"><i class="fa-solid fa-scale-balanced"></i> Loan-to-Income</div>
+                        <div class="fg-value-input">
+                            <input type="number" id="loan_to_income" name="loan_to_income" min="0" step="0.1" value="2.0" class="hero-num">
+                        </div>
+                    </div>
+
+                    <div class="form-group-card focus-cta">
+                        <button type="submit" id="analyze-btn" class="btn-mega">
+                            Analyze Risk <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+        <!-- Loading / Empty states are overlays to save space -->
+        <div id="loading-overlay" class="glass-panel" style="display: none; text-align: center; padding: 60px;">
+           <div class="spinner"></div><h3 class="gradient-text mt-3">Synthesizing Neuro-Financial Factors...</h3>
+        </div>
+
+        <!-- SECTION 2 & 3: RESULTS ENGINE -->
+        <div id="results-dashboard" style="display: none;">
+            
+            <div class="results-header slide-up delay-1">
+                <h2>Diagnostic Overview</h2>
+                <span class="report-id">SESSION ID: #<span id="random-id"></span></span>
+            </div>
+
+            <!-- PRIMARY OUTCOME GRID (3 Columns) -->
+            <section class="outcome-grid mb-5">
+                
+                <!-- Left: Big Ring Card -->
+                <div class="dash-card float-anim center-content">
+                    <h4 class="card-title">Risk Probability Score</h4>
+                    <div class="massive-ring-container">
+                        <svg class="massive-ring" viewBox="0 0 120 120">
+                            <circle class="m-ring-bg" cx="60" cy="60" r="54"></circle>
+                            <circle class="m-ring-fill" id="prob-ring" cx="60" cy="60" r="54"></circle>
+                        </svg>
+                        <div class="m-ring-content">
+                            <div class="m-ring-val" id="prob-percentage">0%</div>
+                            <div class="m-ring-label" id="ring-label">Evaluating</div>
+                        </div>
+                    </div>
+                    <div class="status-pill mt-3" id="badge-container">
+                        <i class="fa-solid fa-circle-notch"></i> Computing...
+                    </div>
+                </div>
+
+                <!-- Center: AI Insights -->
+                <div class="dash-card float-anim delay-2">
+                    <h4 class="card-title"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Financial Insights</h4>
+                    <div class="insight-two-col">
+                        <div class="insight-box box-green">
+                            <h5><i class="fa-solid fa-circle-check"></i> Protective Factors</h5>
+                            <ul id="pros-list" class="styled-list"></ul>
+                        </div>
+                        <div class="insight-box box-amber mt-3">
+                            <h5><i class="fa-solid fa-circle-exclamation"></i> Risk Factors</h5>
+                            <ul id="cons-list" class="styled-list"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Interactive What-If -->
+                <div class="dash-card float-anim delay-3 interactive-panel">
+                    <h4 class="card-title"><i class="fa-solid fa-sliders"></i> What-If Simulator</h4>
+                    <p class="sim-desc">Simulate how changing your utilization impacts your final risk tier.</p>
+                    
+                    <div class="sim-controls">
+                        <div class="sim-header">
+                            <span>Simulated Utilization:</span>
+                            <span id="sim-val" class="gradient-text font-bold">30%</span>
+                        </div>
+                        <input type="range" id="sim-slider" min="0" max="100" step="1" value="30" class="hero-slider">
+                    </div>
+
+                    <div class="sim-result-box mt-4">
+                        <div class="sim-delta">Predicted Change</div>
+                        <div class="sim-score" id="sim-score-display"><span class="sim-symbol">--</span></div>
+                        <p id="sim-advice" class="sim-advice mt-2">Adjust slider to forecast.</p>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- DEEP ANALYTICS GRID (2 Columns) -->
+            <section class="analytics-grid">
+                
+                <!-- Left: SHAP Drivers -->
+                <div class="dash-card float-anim delay-4">
+                    <div class="card-header-flex">
+                        <h4 class="card-title">Top Decision Drivers</h4>
+                        <span class="badge-pro mini"><i class="fa-solid fa-microchip"></i> Explainable AI</span>
+                    </div>
+                    <ul class="advanced-driver-list" id="driver-list">
+                        <!-- Drivers -->
+                    </ul>
+                </div>
+
+                <!-- Right: Mock Trend Chart -->
+                <div class="dash-card float-anim delay-5 relative-overflow">
+                    <h4 class="card-title">Population Risk Distribution</h4>
+                    <p class="sim-desc">Where your profile sits compared to the baseline dataset.</p>
+                    
+                    <div class="chart-container mt-4">
+                        <!-- Pure CSS SVG Graph -->
+                        <svg viewBox="0 0 400 150" class="line-chart-svg">
+                            <defs>
+                                <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="rgba(20, 184, 166, 0.4)" />
+                                    <stop offset="100%" stop-color="rgba(20, 184, 166, 0)" />
+                                </linearGradient>
+                            </defs>
+                            <path class="chart-area" d="M0,150 L0,100 Q50,20 100,80 T200,60 T300,10 T400,90 L400,150 Z" fill="url(#chartGlow)"></path>
+                            <path class="chart-line" d="M0,100 Q50,20 100,80 T200,60 T300,10 T400,90" fill="none" stroke="var(--accent-teal)" stroke-width="3"></path>
+                            
+                            <!-- Your Position Marker -->
+                            <g class="chart-marker" id="chart-marker" transform="translate(100, 80)">
+                                <circle cx="0" cy="0" r="5" fill="#fff" filter="drop-shadow(0 0 5px #14b8a6)"></circle>
+                                <line x1="0" y1="0" x2="0" y2="70" stroke="rgba(255,255,255,0.3)" stroke-dasharray="4"></line>
+                                <text x="0" y="-15" fill="#fff" font-size="10" text-anchor="middle" class="font-bold">You</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>

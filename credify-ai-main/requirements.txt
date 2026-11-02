@@ -1,0 +1,18 @@
+# Core data handling
+numpy
+pandas
+
+# Machine learning
+scikit-learn
+xgboost
+
+# Explainability
+shap
+
+# Visualization (used by SHAP)
+matplotlib
+seaborn
+
+# API and Web Server
+fastapi
+uvicorn
